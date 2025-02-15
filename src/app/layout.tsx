@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
+import NavigationBar from "@/components/navigationBar/NavigationBar";
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={roboto.variable}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
+            <NavigationBar/>
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
