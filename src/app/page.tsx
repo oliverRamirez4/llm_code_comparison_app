@@ -8,7 +8,7 @@ import ModelSelectButtonGroup from "@/components/modelSelectButtonGroup/ModelSel
 
 export default function Home() {
   const [prompt, setPrompt] = useState<string>("");
-  const [allModels, setAllModels] = useState<string[]>(["gpt-4o", "claude-3-opus-20240229", "gemini-pro"]);
+  const [allModels, setAllModels] = useState<string[]>(["gpt-4o", "claude-3-opus-20240229", "gpt-4o-mini", "claude-3-5-sonnet-20241022"]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
 
   const handleModelChange = (newSelectedModels: string[]) => {

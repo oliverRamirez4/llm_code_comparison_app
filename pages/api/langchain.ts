@@ -13,9 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     let apiKey;
-    if (modelName === "gpt-4o") {
+    if (modelName === "gpt-4o" || modelName === "gpt-4o-mini") {
       apiKey = process.env.OPENAI_API_KEY;
-    } else if (modelName === "claude-3-opus-20240229") {
+    } else if (modelName === "claude-3-opus-20240229" || modelName === "claude-3-5-sonnet-20241022") {
       apiKey = process.env.ANTHROPIC_API_KEY;
     } else {
       apiKey = process.env.GOOGLE_API_KEY;
