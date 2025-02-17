@@ -5,29 +5,18 @@ import PromptInputBox from "@/components/promptInput/PromptInputBox";
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import ModelSelectButtonGroup from "@/components/modelSelectButtonGroup/ModelSelectButtonGroup";
-import { getOutput } from '@/langchain';
 
 export default function Home() {
   const [prompt, setPrompt] = useState<string>("");
-  const [allModels, setAllModels] = useState<string[]>(["model1", "model2", "model3"]);
+  const [allModels, setAllModels] = useState<string[]>(["gpt-4o", "claude-3-opus-20240229", "gemini-pro"]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
-
-  const [output, setOutput] = useState<string>("");
 
   const handleModelChange = (newSelectedModels: string[]) => {
     setSelectedModels(newSelectedModels);
   }
 
-  const handlePromptChange = async (newPrompt: string) => {
+  const handlePromptChange = (newPrompt: string) => {
     setPrompt(newPrompt);
-    const response = await getOutput(newPrompt);
-    setOutput(response || "");
-  }
-
-  const sendPrompt =(prompt: string) => {
-  
-    // Call the API to get the output
-    // getOutput(prompt);
   }
 
   return (
@@ -53,7 +42,7 @@ export default function Home() {
 
           {selectedModels.map((model) => (
             <Grid key={model} size={{ xs: 12, md: 6 }}>
-              <ChatOutputBox content={output} modelName={model} />
+              <ChatOutputBox modelName={model} prompt={prompt} />
             </Grid>
           ))}
         </Grid>

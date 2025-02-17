@@ -1,14 +1,46 @@
+'use client'
+import { useEffect, useState } from "react";
 import React from "react";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 
-export default function ChatOutputBox({ content, modelName }: { content: string, modelName: string }) {
+// Define the props interface
+interface ChatOutputBoxProps {
+  modelName: string;
+  prompt: string;
+}
+
+// Define the ChatOutputBox component
+export default function ChatOutputBox({ modelName, prompt }: ChatOutputBoxProps) {
+  const [output, setOutput] = useState<string>("");
+
+  useEffect(() => {
+    const fetchOutput = async () => {
+      if (prompt) {
+        try {
+          const response = await fetch("/api/langchain", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ modelName, prompt }),
+          });
+          const data = await response.json();
+          if (data.output) {
+            setOutput(data.output);
+          }
+        } catch (error) {
+          console.error("Error fetching the output:", error);
+        }
+      }
+    };
+
+    fetchOutput();
+  }, [prompt, modelName]);
+
   return (
     <Card
       sx={{
-        //display: "flex",
         justifyContent: "center",
         padding: 2,
         margin: 2,
@@ -17,14 +49,13 @@ export default function ChatOutputBox({ content, modelName }: { content: string,
         boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
       }}
     >
-        <Typography variant="h5" component="div">
-            {modelName}
-        </Typography>
-        <Typography component = "div">
-            {content}
-        </Typography>
-          
+      <Typography variant="h5" component="div">
+        {modelName}
+      </Typography>
+      <Typography component="div">
+        {output}
+      </Typography>
     </Card>
   );
-};
+}
 
