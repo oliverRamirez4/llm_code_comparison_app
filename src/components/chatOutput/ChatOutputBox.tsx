@@ -20,14 +20,37 @@ export default function ChatOutputBox({ modelName, prompt }: ChatOutputBoxProps)
         try {
           const response = await fetch("/api/langchain", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ modelName, prompt }),
           });
-          const data = await response.json();
-          if (data.output) {
-            setOutput(data.output);
+
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error("Response body is null");
+          }
+
+          const decoder = new TextDecoder();
+          let done = false;
+
+          while (!done) {
+            const { value, done: readerDone } = await reader.read();
+            done = readerDone;
+            if (value) {
+              const chunk = decoder.decode(value, { stream: true });
+              const lines = chunk.split('\n');
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const jsonString = line.replace('data: ', '');
+                  if (jsonString.trim()) {
+                    const parsedChunk = JSON.parse(jsonString);
+                    const content = parsedChunk.content;
+                    console.log("Content: ", content);
+                    setOutput((prevOutput) => prevOutput + content);
+                    console.log("Output: ", output);
+                  }
+                }
+              }
+            }
           }
         } catch (error) {
           console.error("Error fetching the output:", error);
